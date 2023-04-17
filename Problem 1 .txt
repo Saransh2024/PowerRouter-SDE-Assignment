@@ -1,18 +1,13 @@
 Problem 1 :
 
 Solution - 
-Step 1) First of all make a prefix 2-D array to store the frequency of each member till every index.
+Step 1) First of all, create a hashmap and store key-value of each charcter in the new task queue.
 
-Step 2) Assuming all team members have name from A to Z, the size of prefix array will be 26 * size of the old task queue. 
+Step 2) Check team members in old task queue starting from the current index of old task queue if that member is present in the new task queue using the hashmap. If it is present store the index of that member, else print 'NO MEMBER PRESENT'.
 
-Step 3) Then, create a hashmap and store key-value of each charcter in the new task queue.
+Step 3) Find the count of that team member till that index and store it in a variable 'cnt.
 
-Step 4) Check team members in old task queue starting from the current index of old task queue if that member is present in the new task queue using the hashmap. If it is present store the index of that member, else print 'NO MEMBER PRESENT'.
-
-Step 5) Find the current index member in the new task queue of using the prefix array. 
-
-Step 6) Maintain a count variable, when that count variable equals to the frequency of the member at that index 
-store that index and print that index.
+Step 4) Traverse in new queue and maintain a count variable,increment the count variable if character at that index equals character at the index in old queue. If that count variable equals to the variable 'cnt' at that index store that index and print that index.
 
 Code (C++):-
 
@@ -21,18 +16,6 @@ int findIndex(vector<int> &oldQueue, int curIndex, vector<int> &newQueue)
    int oldQueueSize = oldQueue.size();
    int newQueueSize = newQueue.size();
    
-   int count[26][oldQueueSize];
-   memset(count,0,sizeof(count));
-
-   count[oldQueue[0]-'A'][0]=1;
-
-      for(int i=0;i<26;i++)
-      {  
-        for(int j=1;j<oldQueueSize;j++)
-        {
-           count[i][j]=count[i][j-1]+(oldQueue[j]-'A' == i);
-        }
-      }
 
    unordered_map<char,int>m;
 
@@ -59,13 +42,20 @@ int findIndex(vector<int> &oldQueue, int curIndex, vector<int> &newQueue)
       {
         // finding index of the member in the new task queue
         int cnt=0;
+        for(int i=0;i<=ind;i++)
+        {
+          if(oldQueue[i]==oldQueue[ind])
+            cnt++;
+        }
+        
+        int count=0;// stores frequency of the team member till a index
         int new_ind=-1;
         for(int i=0;i<newQueueSize;i++)
         {
             if(newQueue[i]==oldQueue[ind])
-            cnt++;
+            count++;
 
-            if(newQueue[i]==oldQueue[ind]&&cnt==count[oldQueue[ind]-'A'][ind])
+            if(newQueue[i]==oldQueue[ind]&&cnt==count)
             {
               new_ind=i;
               break;
@@ -78,9 +68,9 @@ int findIndex(vector<int> &oldQueue, int curIndex, vector<int> &newQueue)
   
 }
 
-Time Complexity - O(26 * size of oldQueue)
+Time Complexity - O(size of oldQueue)
 
-Space Complexity - O(26 * size of oldQueue) + O(size of newQueue) 
-                   //for prefix 2-D array    // for unordered map
+Space Complexity -  O(size of newQueue) // for unordered map
+                    
 
 
