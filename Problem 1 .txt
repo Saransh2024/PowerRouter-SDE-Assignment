@@ -1,0 +1,86 @@
+Problem 1 :
+
+Solution - 
+Step 1) First of all make a prefix 2-D array to store the frequency of each member till every index.
+
+Step 2) Assuming all team members have name from A to Z, the size of prefix array will be 26 * size of the old task queue. 
+
+Step 3) Then, create a hashmap and store key-value of each charcter in the new task queue.
+
+Step 4) Check team members in old task queue starting from the current index of old task queue if that member is present in the new task queue using the hashmap. If it is present store the index of that member, else print 'NO MEMBER PRESENT'.
+
+Step 5) Find the current index member in the new task queue of using the prefix array. 
+
+Step 6) Maintain a count variable, when that count variable equals to the frequency of the member at that index 
+store that index and print that index.
+
+Code (C++):-
+
+int findIndex(vector<int> &oldQueue, int curIndex, vector<int> &newQueue)
+{
+   int oldQueueSize = oldQueue.size();
+   int newQueueSize = newQueue.size();
+   
+   int count[26][oldQueueSize];
+   memset(count,0,sizeof(count));
+
+   count[oldQueue[0]-'A'][0]=1;
+
+      for(int i=0;i<26;i++)
+      {  
+        for(int j=1;j<oldQueueSize;j++)
+        {
+           count[i][j]=count[i][j-1]+(oldQueue[j]-'A' == i);
+        }
+      }
+
+   unordered_map<char,int>m;
+
+      for(int i=0;i<newQueueSize;i++)
+        m[newQueue[i]]++;
+
+      // check member present or not
+      int ind=-1;
+      for(int i=curInd-1;i<oldQueueSize;i++)
+      {
+        if(m.find(oldQueue[i])!=m.end())
+        {
+          ind=i;
+          break;
+        }
+
+      }
+      
+      if(ind==-1)
+      {
+        return -1; // no member present
+      }
+      else
+      {
+        // finding index of the member in the new task queue
+        int cnt=0;
+        int new_ind=-1;
+        for(int i=0;i<newQueueSize;i++)
+        {
+            if(newQueue[i]==oldQueue[ind])
+            cnt++;
+
+            if(newQueue[i]==oldQueue[ind]&&cnt==count[oldQueue[ind]-'A'][ind])
+            {
+              new_ind=i;
+              break;
+            }
+
+        }
+
+        return new_ind+1;
+      } 
+  
+}
+
+Time Complexity - O(26 * size of oldQueue)
+
+Space Complexity - O(26 * size of oldQueue) + O(size of newQueue) 
+                   //for prefix 2-D array    // for unordered map
+
+
